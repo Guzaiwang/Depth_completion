@@ -1,6 +1,6 @@
 <!-- PROJECT LOGO -->
 
-<p align="center">
+<!-- <p align="center">
 
   <h1 align="center">CompletionFormer: Depth Completion with Convolutions and Vision Transformers</h1>
   <p align="center">
@@ -26,7 +26,7 @@
 </p>
 <p align="center">
 <strong>CompletionFormer</strong>, enabling both local and global propagation for depth completion.
-</p>
+</p> -->
 
 ## ⚙️ Setup
 
@@ -240,7 +240,7 @@ Besides, we also thank [DySPN](https://arxiv.org/abs/2202.09769) for providing t
 
 ## Citation
 
-If you find our work useful in your research please consider citing our paper:
+If you find our work useful in your research please consider citing paper:
 
 ```
 @inproceedings{zhang2023completionformer,

@@ -253,7 +253,19 @@ class CompletionFormerSummary(BaseSummary):
                 plt.imsave(path_save_pred_gray, pred_gray, cmap='gray')
                 plt.imsave(path_save_dep, cm(norm(dep)))
                 plt.imsave(path_save_init, cm(norm(feat_init)))
-                plt.imsave(path_save_error, depth_err_to_colorbar(pred, gt, with_bar=True))
+                showmap, error_map = depth_err_to_colorbar(pred, gt, with_bar=True)
+                plt.imsave(path_save_error, showmap)
+                if 'uncertainty' in output:
+                    unc_map = output['uncertainty'].detach()
+                    unc_map = 1 - unc_map[0, 0, :, :].data.cpu().numpy() 
+                    unc_map = (unc_map - np.min(unc_map))/(np.max(unc_map)- np.min(unc_map))
+                    print(np.max(unc_map), np.min(unc_map))
+                    unc_map = plt.cm.get_cmap(cmap)(unc_map)[:, :, :3]
+                    path_save_unc = '{}/08_uncertainty.png'.format(self.path_output)
+                    plt.imsave(path_save_unc, unc_map)
+                    path_save_unc_com = '{}/09_uncertainty_error.png'.format(self.path_output)
+                    comp_error = np.concatenate((showmap, unc_map), axis=0)
+                    plt.imsave(path_save_unc_com, comp_error)
 
                 for k in range(0, len(list_feat)):
                     path_save_inter = '{}/04_pred_prop_{:02d}.png'.format(
@@ -271,7 +283,8 @@ def depth_err_to_colorbar(est, gt=None, with_bar=False, cmap='jet'):
     else:
         valid = gt > 0
         max_depth = gt.max()
-    error_map = np.abs(est - gt) * valid
+    # error_map = np.abs(est - gt) * valid
+    error_map = np.abs(est - gt)
     h, w= error_map.shape
 
     maxvalue = error_map.max()
@@ -289,6 +302,7 @@ def depth_err_to_colorbar(est, gt=None, with_bar=False, cmap='jet'):
         lower = breakpoints[i-1]
         upper = breakpoints[i]
         error_map = revalue(error_map, lower, upper, start, scale)
+    origin_map = error_map
 
     # [0, 1], [H, W, 3]
     error_map = plt.cm.get_cmap(cmap)(error_map)[:, :, :3]
@@ -308,7 +322,7 @@ def depth_err_to_colorbar(est, gt=None, with_bar=False, cmap='jet'):
     # [0, 1], [H, W, 3]
     error_map = np.concatenate((error_map, error_bar_map[..., :3]), axis=0)[..., :3]
 
-    return error_map
+    return error_map, origin_map
 
 def revalue(map, lower, upper, start, scale):
     mask = (map > lower) & (map <= upper)

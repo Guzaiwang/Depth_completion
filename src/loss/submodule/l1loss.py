@@ -50,7 +50,7 @@ class L1Loss_w_unc(nn.Module):
 
         mask = (gt > self.t_valid).type_as(pred).detach()
         d = torch.abs(pred - gt) 
-        d = y_logvar * d - reg_unc
+        d = 20 * y_logvar * d - reg_unc
         d = d * mask
 
         d = torch.sum(d, dim=[1, 2, 3])
