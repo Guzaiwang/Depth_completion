@@ -5,6 +5,7 @@ src/model/deformconv/DCN.egg-info/
 data_json/NYUv2.pt
 src/pretrained/
 src/apex/
+logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
