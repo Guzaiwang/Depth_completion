@@ -142,7 +142,7 @@ class L1L2wConfidence(BaseLoss_w_confidence):
             # compute consistancy loss
             consistancy_loss = torch.nn.functional.relu( - torch.sign(confidence - first_confidence)* train_consistancy + loss_consistancy)
             consistancy_loss = consistancy_loss.mean()
-            loss_tmp += consistancy_loss
+            loss_tmp += consistancy_loss * 20
 
             loss_tmp = loss['weight'] * loss_tmp
             loss_val.append(loss_tmp)
